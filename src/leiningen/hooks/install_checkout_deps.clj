@@ -7,7 +7,11 @@
 
 (defn install-checkout-deps [f project & args]
   (doseq [dep (.listFiles (file (:root project) "checkouts"))]
-    (install (read-project (.getAbsolutePath (file dep "project.clj")))))
+    (let [fn (.getAbsolutePath (file dep "project.clj"))
+          p (read-project fn)]
+      (println (str "reading project file " fn))
+      (when p
+        (install p))))
   (apply f project args))
 
 (add-hook #'leiningen.deps/deps install-checkout-deps)
